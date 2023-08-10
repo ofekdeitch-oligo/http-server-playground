@@ -22,7 +22,7 @@ func (hashmap HashMap[K, V]) GetSlot(key K) int {
 		panic(err)
 	}
 
-	return int(hash) % len(hashmap.buckets)
+	return abs(int(hash)) % len(hashmap.buckets)
 }
 
 func (hashmap HashMap[K, V]) Set(key K, value V) {
@@ -92,4 +92,23 @@ func removeFromSlice[T any](s []T, index int) []T {
 	ret := make([]T, 0)
 	ret = append(ret, s[:index]...)
 	return append(ret, s[index+1:]...)
+}
+
+func (hashmap HashMap[K, V]) Values() []V {
+	result := make([]V, 0)
+
+	for _, bucket := range hashmap.buckets {
+		for _, tuple := range bucket {
+			result = append(result, tuple.value)
+		}
+	}
+
+	return result
+}
+
+func abs(x int) int {
+	if x < 0 {
+		return -x
+	}
+	return x
 }

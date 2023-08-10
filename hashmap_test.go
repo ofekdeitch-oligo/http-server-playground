@@ -97,7 +97,41 @@ func Test_HashMap_Delete(t *testing.T) {
 	Test{t}.Expect(ok).ToBeFalse()
 }
 
+func Test_HashMap_Values(t *testing.T) {
+	// ARRANGE
+
+	m := NewHashMap[int, int](10)
+
+	// ACT
+	m.Set(1, 5)
+	m.Set(2, 4)
+	m.Set(3, 9)
+
+	// ASSERT
+	values := m.Values()
+	Test{t}.Expect(len(values)).ToEqual(3)
+
+	ok, _ := find(values, 5)
+	Test{t}.Expect(ok).ToBeTrue()
+
+	ok, _ = find(values, 4)
+	Test{t}.Expect(ok).ToBeTrue()
+
+	ok, _ = find(values, 9)
+	Test{t}.Expect(ok).ToBeTrue()
+}
+
 type LibraryIdentifier struct {
 	name    string
 	version string
+}
+
+func find(arr []int, value int) (bool, int) {
+	for i, v := range arr {
+		if v == value {
+			return true, i
+		}
+	}
+
+	return false, 0
 }
