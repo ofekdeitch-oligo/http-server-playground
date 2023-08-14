@@ -18,12 +18,16 @@ func handleBatch(stacks []Stack) BatchResult {
 
 			if ok {
 				existingEntry.maxLastExecutedAt = maxDate(existingEntry.maxLastExecutedAt, stack.timestamp)
+				existingEntry.containerIds.Add(stack.containerId)
 				summaries.Set(uniqueIdentifier, existingEntry)
-
 			} else {
+				containerIds := NewHashSet[string](10)
+				containerIds.Add(stack.containerId)
+
 				summary := LibrarySummary{
 					identifier:        uniqueIdentifier,
 					maxLastExecutedAt: stack.timestamp,
+					containerIds:      containerIds,
 				}
 
 				summaries.Set(uniqueIdentifier, summary)

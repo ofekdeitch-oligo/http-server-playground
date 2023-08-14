@@ -12,10 +12,11 @@ const (
 )
 
 type Stack struct {
-	timestamp time.Time
-	framework Framework
-	clientId  string
-	entries   []StackEntry
+	timestamp   time.Time
+	framework   Framework
+	clientId    string
+	entries     []StackEntry
+	containerId string
 }
 
 type StackEntry struct {

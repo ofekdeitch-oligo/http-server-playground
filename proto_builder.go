@@ -62,10 +62,11 @@ type StackBuilder struct {
 
 func NewStackBuilder() StackBuilder {
 	value := Stack{
-		timestamp: time.Now(),
-		framework: Pyhthon,
-		clientId:  newUuid(),
-		entries:   []StackEntry{},
+		timestamp:   time.Now(),
+		framework:   Pyhthon,
+		clientId:    newUuid(),
+		entries:     []StackEntry{},
+		containerId: newUuid(),
 	}
 
 	return StackBuilder{value: value}

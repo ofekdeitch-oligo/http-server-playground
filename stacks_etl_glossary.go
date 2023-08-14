@@ -11,6 +11,7 @@ type BatchResult struct {
 type LibrarySummary struct {
 	identifier        Identifier
 	maxLastExecutedAt time.Time
+	containerIds      HashSet[string]
 }
 
 type Identifier struct {

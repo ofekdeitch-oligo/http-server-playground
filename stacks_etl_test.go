@@ -67,6 +67,46 @@ func Test_StacksEtl_GivenTwoLibraries_ShouldGetMaxLastExecutedAtForEach(t *testi
 	Test{t}.Expect(actualSummary2.maxLastExecutedAt).ToEqual(time3)
 }
 
+func Test_StacksEtl_GivenTwoLibraries_ShouldCollectContainerIds(t *testing.T) {
+	// ARRANGE
+
+	library1 := NewLibraryInfoBuilder().WithName("axios").WithVersion("1.0.0").Build()
+	library2 := NewLibraryInfoBuilder().WithName("axios").WithVersion("2.0.0").Build()
+	entry1 := NewStackEntryBuilder().WithLibrary(library1).Build()
+	entry2 := NewStackEntryBuilder().WithLibrary(library2).Build()
+
+	stack1 := NewStackBuilder().WithFramework(Nodejs).WithEntries([]StackEntry{entry1, entry2, entry2}).Build()
+	stack2 := NewStackBuilder().WithFramework(Nodejs).WithEntries([]StackEntry{entry1, entry1, entry1, entry2}).Build()
+	stack3 := NewStackBuilder().WithFramework(Nodejs).WithEntries([]StackEntry{entry2}).Build()
+
+	// ACT
+	result := handleBatch([]Stack{stack1, stack2, stack3})
+
+	// ASSERT
+	Test{t}.Expect(len(result.librarySummaries)).ToEqual(2)
+
+	ok1, actualSummary1 := first(
+		result.librarySummaries,
+		func(summary LibrarySummary) bool { return summary.identifier.library.version == "1.0.0" },
+	)
+
+	Test{t}.Expect(ok1).ToEqual(true)
+	Test{t}.Expect(actualSummary1.containerIds.Contains(stack1.containerId)).ToBeTrue()
+	Test{t}.Expect(actualSummary1.containerIds.Contains(stack2.containerId)).ToBeTrue()
+	Test{t}.Expect(actualSummary1.containerIds.Contains(stack3.containerId)).ToBeFalse()
+
+	ok2, actualSummary2 := first(
+		result.librarySummaries,
+		func(summary LibrarySummary) bool { return summary.identifier.library.version == "2.0.0" },
+	)
+
+	Test{t}.Expect(ok2).ToEqual(true)
+	Test{t}.Expect(actualSummary2.containerIds.Contains(stack1.containerId)).ToBeTrue()
+	Test{t}.Expect(actualSummary2.containerIds.Contains(stack2.containerId)).ToBeTrue()
+	Test{t}.Expect(actualSummary2.containerIds.Contains(stack3.containerId)).ToBeTrue()
+
+}
+
 func first[T any](arr []T, predicate func(T) bool) (bool, T) {
 	for _, item := range arr {
 		if predicate(item) {
@@ -75,4 +115,14 @@ func first[T any](arr []T, predicate func(T) bool) (bool, T) {
 	}
 
 	return false, noValue[T]()
+}
+
+func contains[T comparable](arr []T, item T) bool {
+	for _, arrItem := range arr {
+		if arrItem == item {
+			return true
+		}
+	}
+
+	return false
 }
