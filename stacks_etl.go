@@ -3,23 +3,31 @@ package main
 import "time"
 
 func handleBatch(stacks []Stack) BatchResult {
-	summaries := NewHashMap[string, LibrarySummary](100)
+	summaries := NewHashMap[Identifier, LibrarySummary](100)
 
 	for _, stack := range stacks {
-		uniqueIdentifier := ""
-
-		ok, existingEntry := summaries.Get(uniqueIdentifier)
-
-		if ok {
-			existingEntry.maxLastExecutedAt = maxDate(existingEntry.maxLastExecutedAt, stack.timestamp)
-			summaries.Set(uniqueIdentifier, existingEntry)
-
-		} else {
-			summary := LibrarySummary{
-				maxLastExecutedAt: stack.timestamp,
+		for _, entry := range stack.entries {
+			uniqueIdentifier := Identifier{
+				library: LibraryIdentifier{
+					name:    entry.library.name,
+					version: entry.library.version,
+				},
 			}
 
-			summaries.Set(uniqueIdentifier, summary)
+			ok, existingEntry := summaries.Get(uniqueIdentifier)
+
+			if ok {
+				existingEntry.maxLastExecutedAt = maxDate(existingEntry.maxLastExecutedAt, stack.timestamp)
+				summaries.Set(uniqueIdentifier, existingEntry)
+
+			} else {
+				summary := LibrarySummary{
+					identifier:        uniqueIdentifier,
+					maxLastExecutedAt: stack.timestamp,
+				}
+
+				summaries.Set(uniqueIdentifier, summary)
+			}
 		}
 	}
 

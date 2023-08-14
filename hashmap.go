@@ -72,11 +72,6 @@ func NewHashMap[K comparable, V any](size int) HashMap[K, V] {
 	return HashMap[K, V]{buckets}
 }
 
-func noValue[V any]() V {
-	var result V
-	return result
-}
-
 func findKeyInBucket[K comparable, V any](bucket []Tuple[K, V], key K) (bool, *Tuple[K, V], int) {
 	for index, tuple := range bucket {
 

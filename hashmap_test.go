@@ -8,9 +8,9 @@ func Test_HashMap_Set(t *testing.T) {
 
 	// ARRANGE
 
-	m := NewHashMap[LibraryIdentifier, int](10)
+	m := NewHashMap[LibraryIdentifier2, int](10)
 
-	library1 := LibraryIdentifier{
+	library1 := LibraryIdentifier2{
 		name:    "Spring",
 		version: "1.0.0",
 	}
@@ -29,14 +29,14 @@ func Test_HashMap_SetTwice(t *testing.T) {
 
 	// ARRANGE
 
-	m := NewHashMap[LibraryIdentifier, int](10)
+	m := NewHashMap[LibraryIdentifier2, int](10)
 
-	library1 := LibraryIdentifier{
+	library1 := LibraryIdentifier2{
 		name:    "Spring",
 		version: "1.0.0",
 	}
 
-	library2 := LibraryIdentifier{
+	library2 := LibraryIdentifier2{
 		name:    "Spring",
 		version: "1.0.0",
 	}
@@ -60,9 +60,9 @@ func Test_HashMap_NoValue(t *testing.T) {
 
 	// ARRANGE
 
-	m := NewHashMap[LibraryIdentifier, int](10)
+	m := NewHashMap[LibraryIdentifier2, int](10)
 
-	library1 := LibraryIdentifier{
+	library1 := LibraryIdentifier2{
 		name:    "Spring",
 		version: "1.0.0",
 	}
@@ -79,9 +79,9 @@ func Test_HashMap_NoValue(t *testing.T) {
 func Test_HashMap_Delete(t *testing.T) {
 	// ARRANGE
 
-	m := NewHashMap[LibraryIdentifier, int](10)
+	m := NewHashMap[LibraryIdentifier2, int](10)
 
-	library1 := LibraryIdentifier{
+	library1 := LibraryIdentifier2{
 		name:    "Spring",
 		version: "1.0.0",
 	}
@@ -121,7 +121,7 @@ func Test_HashMap_Values(t *testing.T) {
 	Test{t}.Expect(ok).ToBeTrue()
 }
 
-type LibraryIdentifier struct {
+type LibraryIdentifier2 struct {
 	name    string
 	version string
 }
