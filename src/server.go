@@ -20,7 +20,8 @@ func SetupServer() *gin.Engine {
 	g.Use(gin.Recovery())
 
 	g.GET("/health", func(ctx *gin.Context) {
-		ctx.JSON(http.StatusOK, gin.H{"status": "ok"})
+		data := GetHealthResponse{Status: "ok"}
+		ctx.JSON(http.StatusOK, data)
 	})
 
 	return g

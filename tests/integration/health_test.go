@@ -1,7 +1,9 @@
 package tests
 
 import (
+	. "app"
 	"bytes"
+	"encoding/json"
 	"net/http"
 	"testing"
 	"tests/goat"
@@ -27,13 +29,19 @@ func Test(t *testing.T) {
 		suite.Expect(err).ToBeNil()
 		suite.Expect(getHealthResponse.StatusCode).ToEqual(200)
 
-		body := decodeBody(getHealthResponse)
-		suite.Expect(body).ToEqual(`{"status":"ok"}`)
+		actualBody := decodeBody(getHealthResponse)
+		expectBody := GetHealthResponse{Status: "ok"}
+
+		suite.Expect(actualBody).ToEqual(expectBody)
 	})
 }
 
-func decodeBody(resp *http.Response) string {
+func decodeBody(resp *http.Response) GetHealthResponse {
 	buf := new(bytes.Buffer)
 	buf.ReadFrom(resp.Body)
-	return buf.String()
+
+	var body GetHealthResponse
+	json.Unmarshal(buf.Bytes(), &body)
+
+	return body
 }
