@@ -1,6 +1,6 @@
 # Http Server Playground
 
-## Run tests
+### Run tests
 
 ```golang
 go test -v ./...

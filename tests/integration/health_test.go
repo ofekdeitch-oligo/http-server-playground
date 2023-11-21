@@ -1,38 +1,39 @@
 package tests
 
 import (
-	"app"
 	"bytes"
-	"fmt"
 	"net/http"
-	"net/http/httptest"
 	"testing"
 	"tests/goat"
 )
 
-func runTestServer() *httptest.Server {
-	return httptest.NewServer(app.SetupServer())
-}
-
 func Test(t *testing.T) {
 	suite := goat.Suite{t}
 
-	ts := runTestServer()
-	defer ts.Close()
-
 	suite.Test("should return 200", func(t *testing.T) {
-		resp, err := http.Get(fmt.Sprintf("%s/health", ts.URL))
 
-		if err != nil {
-			t.Fatalf("Expected no error, got %v", err)
-		}
+		// ARRANGE
+		driver := NewTestDriver()
 
-		suite.Expect(resp.StatusCode).ToEqual(200)
+		driver.Start()
+		defer driver.Stop()
 
-		buf := new(bytes.Buffer)
-		buf.ReadFrom(resp.Body)
-		body := buf.String()
+		// ACT
 
+		getHealthResponse, err := driver.Get("/health")
+
+		// ASSERT
+
+		suite.Expect(err).ToBeNil()
+		suite.Expect(getHealthResponse.StatusCode).ToEqual(200)
+
+		body := decodeBody(getHealthResponse)
 		suite.Expect(body).ToEqual(`{"status":"ok"}`)
 	})
+}
+
+func decodeBody(resp *http.Response) string {
+	buf := new(bytes.Buffer)
+	buf.ReadFrom(resp.Body)
+	return buf.String()
 }
