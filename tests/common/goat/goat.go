@@ -8,6 +8,10 @@ type Suite struct {
 	T *testing.T
 }
 
+func NewSuite(t *testing.T) Suite {
+	return Suite{T: t}
+}
+
 func (suite Suite) Test(name string, test func(t *testing.T)) {
 	println("")
 	println(name)

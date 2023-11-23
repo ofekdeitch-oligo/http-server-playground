@@ -1,12 +1,13 @@
-package tests
+package metrics
 
 import (
+	"playground/pkg/utils"
+	"playground/tests/common/goat"
 	"testing"
-	"tests/goat"
 )
 
-func TestMetrics(t *testing.T) {
-	suite := goat.Suite{t}
+func TestMetricParser(t *testing.T) {
+	suite := goat.NewSuite(t)
 
 	suite.Test("should parse metrics", func(t *testing.T) {
 		rawPrometheusMetrics := `
@@ -19,43 +20,28 @@ func TestMetrics(t *testing.T) {
 		metrics := ParseMetrics(rawPrometheusMetrics)
 		suite.Expect(len(metrics)).ToEqual(2)
 
-		bipFound, bipMetric := find(metrics, func(metric Metric) bool {
+		bipFound, bipMetric := utils.Find(metrics, func(metric Metric) bool {
 			isBip := hasLabel(metric, "message_type", "bip")
 			return isBip
 		})
 
 		suite.Expect(bipFound).ToBeTrue()
 		suite.Expect(bipMetric.Name).ToEqual("etl_processed_messages_total")
-		suite.Expect(bipMetric.Value).ToEqual("20")
+		suite.Expect(bipMetric.Value).ToEqual(20.)
 
-		bopFound, bopMetric := find(metrics, func(metric Metric) bool {
+		bopFound, bopMetric := utils.Find(metrics, func(metric Metric) bool {
 			isBop := hasLabel(metric, "message_type", "bop")
 			return isBop
 		})
 
 		suite.Expect(bopFound).ToBeTrue()
 		suite.Expect(bopMetric.Name).ToEqual("etl_processed_messages_total")
-		suite.Expect(bopMetric.Value).ToEqual("25")
+		suite.Expect(bopMetric.Value).ToEqual(25.)
 	})
 }
 
-func find[T any](items []T, predicate func(T) bool) (bool, T) {
-	for _, item := range items {
-		if predicate(item) {
-			return true, item
-		}
-	}
-
-	return false, noValue[T]()
-}
-
-func noValue[V any]() V {
-	var result V
-	return result
-}
-
 func hasLabel(metric Metric, name string, value string) bool {
-	exists, _ := find(metric.Labels, func(label Label) bool {
+	exists, _ := utils.Find(metric.Labels, func(label Label) bool {
 		return label.Name == name && label.Value == value
 	})
 

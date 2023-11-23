@@ -1,7 +1,7 @@
 package main
 
-import "internal/bar"
+import "playground/app"
 
 func main() {
-	bar.Bar()
+	app.Start()
 }
