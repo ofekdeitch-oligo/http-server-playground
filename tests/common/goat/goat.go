@@ -29,7 +29,7 @@ func (builder AssertionBuilder) ToEqual(expectedValue any) {
 	actualValue := builder.value
 
 	if actualValue != expectedValue {
-		builder.t.Errorf("\n\nexpected value to be %d, but was %d\n\n", expectedValue, actualValue)
+		builder.t.Errorf("\n\nexpected value to be %s, but was %s\n\n", expectedValue, actualValue)
 	}
 }
 
