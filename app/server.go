@@ -1,8 +1,6 @@
 package app
 
 import (
-	"net/http"
-
 	"playground/app/handlers"
 	"playground/app/metrics"
 	"playground/app/modules"
@@ -11,16 +9,9 @@ import (
 )
 
 func registerRoutes(g *gin.Engine, appModule modules.AppModule) {
-	g.GET("/health", healthHandler())
+	g.GET("/health", handlers.HealthHandler())
 	g.POST("/increment-count", handlers.IncrementCountHandler(appModule))
 	g.GET("/metrics", handlers.MetricsHandler(appModule))
-}
-
-func healthHandler() gin.HandlerFunc {
-	return func(ctx *gin.Context) {
-		data := GetHealthResponse{Status: "ok"}
-		ctx.JSON(http.StatusOK, data)
-	}
 }
 
 func Start() {

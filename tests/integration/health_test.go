@@ -1,7 +1,7 @@
 package integration
 
 import (
-	"playground/app"
+	"playground/app/handlers"
 	"playground/tests/common/goat"
 	"playground/tests/common/test_driver"
 	"testing"
@@ -28,8 +28,8 @@ func Test(t *testing.T) {
 		suite.Expect(err).ToBeNil()
 		suite.Expect(getHealthResponse.StatusCode).ToEqual(200)
 
-		actualBody := DecodeJsonBody[app.GetHealthResponse](getHealthResponse)
-		expectBody := app.GetHealthResponse{Status: "ok"}
+		actualBody := DecodeJsonBody[handlers.GetHealthResponse](getHealthResponse)
+		expectBody := handlers.GetHealthResponse{Status: "ok"}
 
 		suite.Expect(actualBody).ToEqual(expectBody)
 	})
